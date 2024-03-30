@@ -1,0 +1,5 @@
+Record=TopLevelDocument|FileName=GEN.SchDoc|SheetNumber=1
+Record=SheetSymbol|SourceDocument=GEN.SchDoc|Designator=Designator|SchDesignator=Designator|FileName=3.MCU.SchDoc|SheetNumber=3|SymbolType=Normal|RawFileName=3.MCU.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=GEN.SchDoc|Designator=Designator|SchDesignator=Designator|FileName=4.SENSOR.SchDoc|SheetNumber=4|SymbolType=Normal|RawFileName=4.SENSOR.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=GEN.SchDoc|Designator=Designator|SchDesignator=Designator|FileName=1.POWER.SchDoc|SheetNumber=5|SymbolType=Normal|RawFileName=1.POWER.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=GEN.SchDoc|Designator=Designator|SchDesignator=Designator|FileName=2.RELAY.SchDoc|SheetNumber=2|SymbolType=Normal|RawFileName=2.RELAY.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
