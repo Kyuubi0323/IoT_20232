@@ -23,7 +23,7 @@
 #include "driver/uart.h"
 #include "driver/spi_master.h"
 
-#include "web_hadilao.h"
+
 #include "output_hadilao.h"
 #include "input_hadilao.h"
 #include "wifi_sta_hadilao.h"
@@ -36,7 +36,7 @@ static const char *TAG = "MAIN";
 char ssid[50] = {0};
 char pwd[50] = {0};
 
-//RingbufHandle_t webserver_ring_buf;
+
  
 
 void app_main()
@@ -64,17 +64,15 @@ void app_main()
     memcpy(wifi_config.sta.password, pwd, strlen(pwd));
     
     wifi_sta_start(wifi_config, WIFI_MODE_STA);
-    
-   
-    
-    
     vTaskDelay(2000 / portTICK_PERIOD_MS);
 
+    ESP_LOGI(TAG, "Starting STA_MODE.......");
     
     while(1)
     {
         vTaskDelay(1000 / portTICK_PERIOD_MS);
         output_io_toggle(LED);
+
         //ESP_LOGI(TAG, "TOGGLE");
     }
     
