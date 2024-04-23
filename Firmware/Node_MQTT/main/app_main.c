@@ -29,13 +29,16 @@
 #include "wifi_sta_hadilao.h"
 #include "wifi_ap_hadilao.h"
 #include "uart_hadilao.h"
+#include "common_hadilao.h"
+#include "mqtt_hadilao.h"
 
 
 #define LED 2
 static const char *TAG = "MAIN";
 char ssid[50] = {0};
 char pwd[50] = {0};
-
+status_red_t status_red;
+status_blue_t status_blue;
 
  
 
@@ -65,15 +68,16 @@ void app_main()
     
     wifi_sta_start(wifi_config, WIFI_MODE_STA);
     vTaskDelay(2000 / portTICK_PERIOD_MS);
-
     ESP_LOGI(TAG, "Starting STA_MODE.......");
+    mqtt_client_start();
     
-    while(1)
-    {
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-        output_io_toggle(LED);
+    
+    // while(1)
+    // {
+    //     vTaskDelay(1000 / portTICK_PERIOD_MS);
+    //     output_io_toggle(LED);
 
-        //ESP_LOGI(TAG, "TOGGLE");
-    }
+    //     //ESP_LOGI(TAG, "TOGGLE");
+    // }
     
 }

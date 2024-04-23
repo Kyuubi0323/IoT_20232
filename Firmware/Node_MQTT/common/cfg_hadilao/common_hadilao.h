@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef _COMMON_H_
-#define _COMMON_H_
+#ifndef _COMMON_HADILAO_H_
+#define _COMMON_HADILAO_H_
 
 #include <math.h>
 #include <stdint.h>
