@@ -21,7 +21,7 @@
 
 
 #define SMARTCONFIG_MODE 10
-
+#define PROCESS_MODE 20
 #define MAIN_MODE 30
 
 typedef enum

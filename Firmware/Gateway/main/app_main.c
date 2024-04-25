@@ -56,17 +56,17 @@ void app_main()
     output_io_create(LED);
     /* init wifi configuration*/
     wifi_init();
-    sprintf(ssid, "SonHa");
-    sprintf(pwd, "07052003");
+    sprintf(ssid, "Kyuubi");
+    sprintf(pwd, "laclac123");
     wifi_config_t wifi_config;
     bzero(&wifi_config, sizeof(wifi_config_t));
     memcpy(wifi_config.sta.ssid, ssid, strlen(ssid));
     memcpy(wifi_config.sta.password, pwd, strlen(pwd));
     
-    //wifi_sta_start(wifi_config, WIFI_MODE_STA);
-   wifi_init_softap();
+    wifi_sta_start(wifi_config, WIFI_MODE_STA);
+    //wifi_init_softap();
    
-    start_webserver();
+    //start_webserver();
     
     vTaskDelay(2000 / portTICK_PERIOD_MS);
 
