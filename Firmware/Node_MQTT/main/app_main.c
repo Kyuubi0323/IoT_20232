@@ -37,7 +37,7 @@
 static const char *TAG = "MAIN";
 char ssid[50] = {0};
 char pwd[50] = {0};
-status_red_t status_red;
+
 status_blue_t status_blue;
 
  
@@ -59,8 +59,8 @@ void app_main()
     output_io_create(LED);
     /* init wifi configuration*/
     wifi_init();
-    sprintf(ssid, "Kyuubi");
-    sprintf(pwd, "laclac123");
+    sprintf(ssid, "Maimei");
+    sprintf(pwd, "123456789");
     wifi_config_t wifi_config;
     bzero(&wifi_config, sizeof(wifi_config_t));
     memcpy(wifi_config.sta.ssid, ssid, strlen(ssid));
@@ -72,12 +72,11 @@ void app_main()
     mqtt_client_start();
     
     
-    // while(1)
-    // {
-    //     vTaskDelay(1000 / portTICK_PERIOD_MS);
-    //     output_io_toggle(LED);
-
-    //     //ESP_LOGI(TAG, "TOGGLE");
-    // }
+    while(1)
+    {
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        output_io_toggle(LED);
+        
+    }
     
 }

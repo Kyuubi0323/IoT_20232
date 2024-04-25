@@ -34,32 +34,21 @@ typedef enum
     WIFI_SOFTAP,
 }status_blue_t;
 
-typedef enum
-{
-    LOCAL_MODE,
-    NORMAL_MODE,
-    CONFIG_MODE,
-}status_red_t;
-
 typedef struct 
 {   
     char cmd[20];
     char action[15];
-    int unicast_addr;
-    int group_addr;
     int state;
     char url[50];
     int timeout;
 } mqtt_obj_t;
 
 typedef struct {
-    uint16_t uni_addr;
-    char node_type[10];
-    uint16_t temp;
-    int8_t rssi;
-    uint8_t heartbeat;
-    uint16_t battery;
-    char status[6];
+    uint8_t node_id;
+    char ver[4];
+    uint8_t temp;
+    uint8_t humid;
+    uint8_t LDR_value;
 } node_t;
 
 

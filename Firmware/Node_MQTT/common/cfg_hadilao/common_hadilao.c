@@ -55,8 +55,6 @@ esp_err_t mqtt_parse_data(char *mqtt_data, mqtt_obj_t *mqtt_obj)
                 memcpy(mqtt_obj->url, cur_elem->valuestring, strlen(cur_elem->valuestring) + 1);
             else if (strcmp(cur_str, "state") == 0)
                 mqtt_obj->state = cur_elem->valueint;
-            else if (strcmp(cur_str, "unicast_addr") == 0)
-                mqtt_obj->unicast_addr = cur_elem->valueint;
             else if (strcmp(cur_str, "timeout") == 0)
                 mqtt_obj->timeout = cur_elem->valueint;
         }
