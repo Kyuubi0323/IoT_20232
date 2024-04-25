@@ -67,7 +67,6 @@ void app_main()
     memcpy(wifi_config.sta.password, pwd, strlen(pwd));
     wifi_sta_start(wifi_config, WIFI_MODE_STA);
     vTaskDelay(1000 / portTICK_PERIOD_MS);
-    
     mqtt_client_start();
     
     

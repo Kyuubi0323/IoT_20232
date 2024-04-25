@@ -42,8 +42,8 @@ esp_mqtt_client_handle_t client;
 char version[10];
 
 extern status_blue_t status_blue;
-char topic_commands_data[20] = "MANDEVICES_RESP";
-char topic_commands_upgrade[20] = "MANDEVICES_RECV";
+char topic_commands_data[20] = "mandevices/response";
+char topic_commands_upgrade[20] = "mandevices/receive";
 node_t _sensor;
 
 
@@ -80,7 +80,7 @@ void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event
     case MQTT_EVENT_CONNECTED:
     {
         ESP_LOGI(TAG, "MQTT event connected");
-        esp_mqtt_client_subscribe(client, topic_commands_data, 0);
+        //esp_mqtt_client_subscribe(client, topic_commands_data, 0);
         esp_mqtt_client_subscribe(client, topic_commands_upgrade, 0);
         cJSON_mqtt_handler(event);
         break;
@@ -125,6 +125,7 @@ void mqtt_client_task(void *param)
     while(1)
     {
         mess_recv = (char*)xRingbufferReceive(mqtt_ring_buf, &mess_size, portMAX_DELAY);
+        ESP_LOGI(TAG, "New_data");
         if (mess_recv)
         {
             mess_recv[mess_size] = '\0';
@@ -132,22 +133,17 @@ void mqtt_client_task(void *param)
             memset(&mqtt_obj, 0, sizeof(mqtt_obj));
             mqtt_parse_data(mess_recv, &mqtt_obj);
             if (strcmp(mqtt_obj.action, "set") == 0)
-            {
-                if (mqtt_obj.state == 1)
-                {
-                    ESP_LOGI(TAG, "Set state ON");
-                }
-                else if (mqtt_obj.state == 0)
-                {
-                    ESP_LOGI(TAG, "Set state OFF");
-                }
+            {   
+                mqtt_obj.dev_state = 1 - mqtt_obj.dev_state;
+                ESP_LOGI(TAG, "Set state %s", mqtt_obj.dev_state ? "ON":"OFF");
             }
             if (strcmp(mqtt_obj.action, "get") == 0)
             {
-               
+               ESP_LOGI(TAG, "Get state");
             }
             else if (strcmp(mqtt_obj.action, "upgrade") == 0)
             {
+                ESP_LOGI(TAG, "Upgrade firmware");
                 //uint32_t free_heap_size = 0, min_free_heap_size = 0;
                 //free_heap_size = esp_get_free_heap_size();
                 //min_free_heap_size = esp_get_minimum_free_heap_size();
@@ -158,21 +154,20 @@ void mqtt_client_task(void *param)
             else if (strcmp(mqtt_obj.action, "open") == 0)
             {
                 ESP_LOGI(TAG, "here is open");
-                status_blue = PROVISIONING;
+                
             }
             else if (strcmp(mqtt_obj.action, "close") == 0)
             {
+                ESP_LOGI(TAG, "Close");
                 status_blue = NOT_STATE;
             }
             else if (strcmp(mqtt_obj.action, "delete") == 0)
             {
-                //esp_ble_mesh_client_common_param_t common = {0};
-                //node_info_t *node = ble_mesh_get_node_info_with_unicast(mqtt_obj.unicast_addr);
-                //ble_mesh_config_node_reset(&common, node, config_client.model);
+                ESP_LOGI(TAG, "Close");
             }
             else if (strcmp(mqtt_obj.action, "set_timeout") == 0)
             {
-        
+                ESP_LOGI(TAG, "Close");
             }
             else if (strcmp(mqtt_obj.action, "cfg") == 0)
             {
@@ -185,6 +180,10 @@ void mqtt_client_task(void *param)
                 ESP_LOGI(TAG, "Trigger SoftAP");
                 
                 esp_restart();
+            }
+            else
+            {
+                ESP_LOGI(TAG, "Unknown action");
             }
             vRingbufferReturnItem(mqtt_ring_buf, (void*)mess_recv);
         }
@@ -211,6 +210,6 @@ void mqtt_client_start(void)
     client = esp_mqtt_client_init(&mqtt_cfg);
     esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler, NULL);
     esp_mqtt_client_start(client);
-    //xTaskCreate(&mqtt_client_task, "mqtt_task", 4096, NULL, 9, NULL);
+    xTaskCreate(&mqtt_client_task, "mqtt_task", 4096, NULL, 9, NULL);
 }
 

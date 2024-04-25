@@ -36,7 +36,7 @@ typedef struct
 {   
     char cmd[20];
     char action[15];
-    int state;
+    int dev_state;
     char url[50];
     int timeout;
 } mqtt_obj_t;
