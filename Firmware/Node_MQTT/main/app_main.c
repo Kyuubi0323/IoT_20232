@@ -31,9 +31,8 @@
 #include "uart_hadilao.h"
 #include "common_hadilao.h"
 #include "mqtt_hadilao.h"
+#include "led_hadilao.h"
 
-
-#define LED 2
 static const char *TAG = "MAIN";
 char ssid[50] = {0};
 char pwd[50] = {0};
@@ -54,29 +53,29 @@ void app_main()
     }
     ESP_ERROR_CHECK(err);
     /* chip's information*/
-    //chip_stats();
-    /* init GPIO */
-    output_io_create(LED);
+    chip_stats();
+    status_blue = NORMAL_MODE;
+    /* init interface tasks */
+    xTaskCreate(led_blue_task, "led_blue_task", 2048, NULL, 10, NULL);
     /* init wifi configuration*/
     wifi_init();
-    sprintf(ssid, "Maimei");
-    sprintf(pwd, "123456789");
+    sprintf(ssid, "Kyuubi");
+    sprintf(pwd, "laclac123");
     wifi_config_t wifi_config;
     bzero(&wifi_config, sizeof(wifi_config_t));
     memcpy(wifi_config.sta.ssid, ssid, strlen(ssid));
     memcpy(wifi_config.sta.password, pwd, strlen(pwd));
-    
     wifi_sta_start(wifi_config, WIFI_MODE_STA);
-    vTaskDelay(2000 / portTICK_PERIOD_MS);
-    ESP_LOGI(TAG, "Starting STA_MODE.......");
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    
     mqtt_client_start();
     
     
-    while(1)
-    {
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-        output_io_toggle(LED);
+    // while(1)
+    // {
+    //     vTaskDelay(1000 / portTICK_PERIOD_MS);
+    //     output_io_toggle(LED);
         
-    }
+    // }
     
 }

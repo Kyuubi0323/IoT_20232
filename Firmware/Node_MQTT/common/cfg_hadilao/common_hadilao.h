@@ -27,10 +27,8 @@
 typedef enum
 {
     NOT_STATE,
-    POWER_ON_PROVISIONING,
-    SMARTCONFIG,
+    NORMAL_MODE,
     FOTA,
-    PROVISIONING,
     WIFI_SOFTAP,
 }status_blue_t;
 

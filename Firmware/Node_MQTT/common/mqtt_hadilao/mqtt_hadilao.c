@@ -92,7 +92,7 @@ void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event
         ESP_LOGI(TAG, "MQTT event subcribed, msg_id=%d", event->msg_id);
         break;
     case MQTT_EVENT_UNSUBSCRIBED:
-        ESP_LOGI(TAG, "MQTT event unsubcribed, msg_id=%d", event->msg_id);
+        ESP_LOGI(TAG, "MQTT event unsubcrib ed, msg_id=%d", event->msg_id);
         break;
     case MQTT_EVENT_PUBLISHED:
         ESP_LOGI(TAG, "MQTT event published, msg_id=%d", event->msg_id);
@@ -106,7 +106,7 @@ void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event
         size_t mess_size = 0;
         mess_recv = (char*)xRingbufferReceive(mqtt_ring_buf, &mess_size, portMAX_DELAY);
         mess_recv[mess_size] = '\0';
-        printf("ringbuf %s\n", mess_recv);
+        printf("DATA %s\n", mess_recv);
         break;
     }
     case MQTT_EVENT_ERROR:

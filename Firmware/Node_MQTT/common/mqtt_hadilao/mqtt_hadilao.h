@@ -26,7 +26,8 @@
 //#define MQTT_BROKER "38.105.209.36"
 //#define MQTT_USERNAME "device_01"
 //#define MQTT_ID "device_01"
-
+//#define MQTT_USER       "unused"
+//#define MQTT_PASS       "unused"
 //#define MQTT_BROKER "mqtt.thingsboard.cloud"
 
 //#define MQTT_USERNAME "device01"
