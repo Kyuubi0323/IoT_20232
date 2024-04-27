@@ -59,8 +59,8 @@ void app_main()
     xTaskCreate(led_blue_task, "led_blue_task", 2048, NULL, 10, NULL);
     /* init wifi configuration*/
     wifi_init();
-    sprintf(ssid, "Kyuubi");
-    sprintf(pwd, "laclac123");
+    sprintf(ssid, "CONTRAST_3");
+    sprintf(pwd, "1234567890");
     wifi_config_t wifi_config;
     bzero(&wifi_config, sizeof(wifi_config_t));
     memcpy(wifi_config.sta.ssid, ssid, strlen(ssid));
