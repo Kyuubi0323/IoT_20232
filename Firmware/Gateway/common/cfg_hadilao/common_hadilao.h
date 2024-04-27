@@ -39,15 +39,21 @@ typedef struct
     int dev_state;
     char url[50];
     int timeout;
-} mqtt_obj_t;
 
-typedef struct {
-    uint8_t node_id;
-    char ver[4];
+    uint8_t id;
+    char version[4];
     uint8_t temp;
     uint8_t humid;
     uint8_t LDR_value;
-} node_t;
+} mqtt_obj_t;
+
+// typedef struct {
+//     uint8_t node_id;
+//     char ver[4];
+//     uint8_t temp;
+//     uint8_t humid;
+//     uint8_t LDR_value;
+// } node_t;
 
 
 esp_err_t mqtt_parse_data(char *mqtt_data, mqtt_obj_t *mqtt_obj);

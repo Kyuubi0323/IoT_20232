@@ -18,6 +18,7 @@
 #include "esp_http_server.h"
 #include "esp_mac.h"
 #include "esp_chip_info.h"
+#include "mqtt_client.h"
 
 #include "driver/gpio.h"
 #include "driver/uart.h"
@@ -29,6 +30,9 @@
 #include "wifi_sta_hadilao.h"
 #include "wifi_ap_hadilao.h"
 #include "uart_hadilao.h"
+#include "common_hadilao.h"
+#include "mqtt_hadilao.h"
+#include "led_hadilao.h"
 
 
 #define LED 2
@@ -37,8 +41,8 @@ char ssid[50] = {0};
 char pwd[50] = {0};
 
 //RingbufHandle_t webserver_ring_buf;
- 
-
+extern esp_mqtt_client_handle_t client;
+status_blue_t status_blue;
 void app_main()
 {   
     esp_err_t err;
@@ -56,8 +60,8 @@ void app_main()
     output_io_create(LED);
     /* init wifi configuration*/
     wifi_init();
-    sprintf(ssid, "Kyuubi");
-    sprintf(pwd, "laclac123");
+    sprintf(ssid, "CONTRAST_3");
+    sprintf(pwd, "1234567890");
     wifi_config_t wifi_config;
     bzero(&wifi_config, sizeof(wifi_config_t));
     memcpy(wifi_config.sta.ssid, ssid, strlen(ssid));
@@ -67,15 +71,15 @@ void app_main()
     //wifi_init_softap();
    
     //start_webserver();
-    
+    mqtt_client_start();
     vTaskDelay(2000 / portTICK_PERIOD_MS);
-
-    
     while(1)
     {
         vTaskDelay(1000 / portTICK_PERIOD_MS);
         output_io_toggle(LED);
-        //ESP_LOGI(TAG, "TOGGLE");
     }
+
     
 }
+
+
