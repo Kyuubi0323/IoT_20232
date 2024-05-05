@@ -1,0 +1,15 @@
+dependencies:
+  espressif/coap:
+    component_hash: 110911e92269df737326f643111da07934621c1c6e9a3cf7c7a002a14d55cfa3
+    source:
+      service_url: https://api.components.espressif.com/
+      type: service
+    version: 4.3.4~1
+  idf:
+    component_hash: null
+    source:
+      type: idf
+    version: 5.2.0
+manifest_hash: d527f4ac9c95fc3868e388edec9299c4a796485bf18cbf66651b9ed7cd29eba6
+target: esp32
+version: 1.0.0
