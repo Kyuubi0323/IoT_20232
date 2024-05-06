@@ -62,3 +62,5 @@ esp_err_t mqtt_parse_data(char *mqtt_data, mqtt_obj_t *mqtt_obj)
     cJSON_Delete(root);
     return ESP_OK;
 }
+
+

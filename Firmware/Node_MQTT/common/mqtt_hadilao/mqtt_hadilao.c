@@ -42,8 +42,8 @@ esp_mqtt_client_handle_t client;
 char version[10];
 
 extern status_blue_t status_blue;
-char topic_commands_data[20] = "mandevices/response";
-char topic_commands_upgrade[20] = "mandevices/receive";
+char topic_commands_data[20] = "/mandevices/response";
+char topic_commands_upgrade[20] = "/mandevices/receive";
 node_t _sensor;
 
 
@@ -67,8 +67,24 @@ void cJSON_mqtt_handler(void *event_data)
     cJSON_Delete(root);
     if (payload != NULL)
     free(payload);
-
 }
+void cJSON_update_stt(void *event_data)
+{
+    esp_mqtt_event_handle_t event = event_data;
+    client = event->client;
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddNumberToObject(root, "id", 9);
+    cJSON_AddStringToObject(root, "version", "1.2");
+    cJSON_AddNumberToObject(root, "temp", 25);
+    cJSON_AddNumberToObject(root, "humid", 80);
+    cJSON_AddNumberToObject(root, "light", 255);
+    char *payload = cJSON_Print(root);
+    esp_mqtt_client_publish(client, topic_commands_data, payload, 0, 1, 1);
+    cJSON_Delete(root);
+    if (payload != NULL)
+    free(payload);
+}
+
 void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
 {
     ESP_LOGD(TAG, "Event dispatched from event loop base=%s, event_id=%d", base, event_id);
@@ -83,6 +99,7 @@ void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event
         //esp_mqtt_client_subscribe(client, topic_commands_data, 0);
         esp_mqtt_client_subscribe(client, topic_commands_upgrade, 0);
         cJSON_mqtt_handler(event);
+        cJSON_update_stt(event);
         break;
     }
     case MQTT_EVENT_DISCONNECTED:
@@ -102,11 +119,6 @@ void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event
         UBaseType_t res = xRingbufferSend(mqtt_ring_buf, event->data, event->data_len, portMAX_DELAY);
         if(res != pdTRUE)
             ESP_LOGE(TAG, "Failed to send item\n");
-        char *mess_recv;
-        size_t mess_size = 0;
-        mess_recv = (char*)xRingbufferReceive(mqtt_ring_buf, &mess_size, portMAX_DELAY);
-        mess_recv[mess_size] = '\0';
-        printf("DATA %s\n", mess_recv);
         break;
     }
     case MQTT_EVENT_ERROR:
@@ -124,8 +136,7 @@ void mqtt_client_task(void *param)
     mqtt_obj_t mqtt_obj;
     while(1)
     {
-        mess_recv = (char*)xRingbufferReceive(mqtt_ring_buf, &mess_size, portMAX_DELAY);
-        ESP_LOGI(TAG, "New_data");
+        mess_recv = (char*)xRingbufferReceive(mqtt_ring_buf, &mess_size, pdMS_TO_TICKS(2000));
         if (mess_recv)
         {
             mess_recv[mess_size] = '\0';

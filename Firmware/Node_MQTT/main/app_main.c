@@ -59,8 +59,8 @@ void app_main()
     xTaskCreate(led_blue_task, "led_blue_task", 2048, NULL, 10, NULL);
     /* init wifi configuration*/
     wifi_init();
-    sprintf(ssid, "CONTRAST_3");
-    sprintf(pwd, "1234567890");
+    sprintf(ssid, "Kyuubi");
+    sprintf(pwd, "laclac123");
     wifi_config_t wifi_config;
     bzero(&wifi_config, sizeof(wifi_config_t));
     memcpy(wifi_config.sta.ssid, ssid, strlen(ssid));
@@ -68,13 +68,4 @@ void app_main()
     wifi_sta_start(wifi_config, WIFI_MODE_STA);
     vTaskDelay(1000 / portTICK_PERIOD_MS);
     mqtt_client_start();
-    
-    
-    // while(1)
-    // {
-    //     vTaskDelay(1000 / portTICK_PERIOD_MS);
-    //     output_io_toggle(LED);
-        
-    // }
-    
 }

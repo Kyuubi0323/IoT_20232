@@ -20,7 +20,7 @@
 #include <stdlib.h>
 
 //#define MQTT_BROKER "broker.hivemq.com"
-    #define MQTT_BROKER "test.mosquitto.org"
+#define MQTT_BROKER "test.mosquitto.org"
 //#define MQTT_BROKER "0.0.0.0"
 //#define MQTT_BROKER "mqtt.eclipseprojects.io"
 //#define MQTT_BROKER "38.105.209.36"
