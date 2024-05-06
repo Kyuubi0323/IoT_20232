@@ -15,13 +15,13 @@
   
 *    <a href="https://github.com/Kyuubi0323/IoT_20232/"></a>
     <br />
-    <a href="https://github.com/Kyuubi0323/IoT_20232/">View Code</a>
+    [View Code](.)
     ·
-    <a href="https://github.com/Kyuubi0323/IoT_20232/issues">Report Bug</a>
+    [Report Bug](issues)
     ·
-    <a href="https://github.com/Kyuubi0323/IoT_20232/issues">Request Feature</a>
+    [Request Feature](feature)
     ·
-    <a href="https://github.com/Kyuubi0323/IoT_20232/pulls">Create a Pull Request</a>
+    [Create a Pull Request](pulls)
   </p>
 </p>
 
