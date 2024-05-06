@@ -51,5 +51,3 @@ CoAP    _server : theThings.io
 
 [issues-shield]: https://img.shields.io/github/issues/Kyuubi0323/IoT_20232
 [issues-url]: https://github.com/Kyuubi0323/IoT_20232/issues
-
--a
