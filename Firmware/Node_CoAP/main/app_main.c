@@ -29,15 +29,14 @@
 #include "coap3/coap.h"
 
 #include "coap3/coap_internal.h"
-/* Note: ESP32 don't support temperature sensor */
-#include "driver/temperature_sensor.h"
+
 
 #define ESP_WIFI_SSID      		""		// Please insert your SSID
 #define ESP_WIFI_PASS      		""		// Please insert your password
 #define ESP_WIFI_AUTH_MODE		WIFI_AUTH_WPA2_PSK // See esp_wifi_types.h
 #define ESP_WIFI_MAX_RETRY 		5U
 
-#define THETHINGSIO_TOKEN_ID 	"5Bl--lhSEfIiWI-chEouKEAaOsIWLrD5An5KMegGo7I"		// Please insert your TOKEN ID
+#define THETHINGSIO_TOKEN_ID 	"5Bl--lhSEfIiWI-chEouKEAaOsIWLrD5An5KMegGo7I"		
 #define THETHINGSIO_COAP_HOST	"coap://coap.thethings.io"
 #define THETHINGSIO_COAP_PATH 	"v2/things/" THETHINGSIO_TOKEN_ID
 
