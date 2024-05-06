@@ -42,10 +42,17 @@ esp_mqtt_client_handle_t client;
 char version[10];
 
 extern status_blue_t status_blue;
-char topic_commands_data[20] = "mandevices/response";
-char topic_commands_gateway[20] = "mandevices/gateway";
+char topic_commands_data[25] = "/mandevices/response";
+char topic_commands_gateway[25] = "/mandevices/gateway";
 //node_t _sensor;
 mqtt_obj_t mqtt_obj;
+
+extern const uint8_t client_cert_pem_start[] asm("_binary_client_crt_start");
+extern const uint8_t client_cert_pem_end[] asm("_binary_client_crt_end");
+extern const uint8_t client_key_pem_start[] asm("_binary_client_key_start");
+extern const uint8_t client_key_pem_end[] asm("_binary_client_key_end");
+extern const uint8_t server_cert_pem_start[] asm("_binary_mosquitto_org_crt_start");
+extern const uint8_t server_cert_pem_end[] asm("_binary_mosquitto_org_crt_end");
 
 void cJSON_mqtt_handler(void *event_data, mqtt_obj_t *mqtt_obj)
 {   esp_mqtt_event_handle_t event = event_data;
@@ -93,14 +100,10 @@ void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event
         break;
     case MQTT_EVENT_DATA:
     {   
+        //ESP_LOGI(TAG, "Event ID:%d\n Event Data: %.*s\n", event->msg_id, event->data_len, event->data);
         UBaseType_t res = xRingbufferSend(mqtt_ring_buf, event->data, event->data_len, portMAX_DELAY);
         if(res != pdTRUE)
             ESP_LOGE(TAG, "Failed to send item\n");
-        char *mess_recv;
-        size_t mess_size = 0;
-        mess_recv = (char*)xRingbufferReceive(mqtt_ring_buf, &mess_size, portMAX_DELAY);
-        mess_recv[mess_size] = '\0';
-        printf("DATA %s\n", mess_recv);
         break;
     }
     case MQTT_EVENT_ERROR:
@@ -118,8 +121,7 @@ void mqtt_client_task(void *param)
     mqtt_obj_t mqtt_obj;
     while(1)
     {
-        mess_recv = (char*)xRingbufferReceive(mqtt_ring_buf, &mess_size, portMAX_DELAY);
-        ESP_LOGI(TAG, "New_data");
+        mess_recv = (char*)xRingbufferReceive(mqtt_ring_buf, &mess_size, pdMS_TO_TICKS(2000));
         if (mess_recv)
         {
             mess_recv[mess_size] = '\0';
@@ -134,21 +136,27 @@ void mqtt_client_task(void *param)
 void mqtt_client_start(void)
 {   
     uint8_t broker[50] = {0};
-    sprintf((char*)broker, "mqtt://%s", MQTT_BROKER);
+    sprintf((char*)broker, "mqtts://%s", MQTT_BROKER);  
     ESP_LOGI(TAG, "Broker: %s", broker);
     mqtt_ring_buf = xRingbufferCreate(4096, RINGBUF_TYPE_NOSPLIT);
     if (mqtt_ring_buf == NULL)
         ESP_LOGE(TAG, "Failed to create ring buffer");
     esp_mqtt_client_config_t mqtt_cfg = {
         .broker.address.uri = (char *)broker,
-        .broker.address.port = 1883,
-        // .credentials.username = MQTT_USERNAME,
-        // .credentials.client_id = MQTT_PASSWORD,
-        .session.keepalive = 60,
+        .broker.address.port = 8884,
+        .broker.verification.certificate = (const char *)server_cert_pem_start,
+        .credentials = {
+            .authentication = {
+                .certificate = (const char *)client_cert_pem_start,
+                .key = (const char *)client_key_pem_start,
+                }
+         },
+        .session.keepalive = 60
+                       
     };
     client = esp_mqtt_client_init(&mqtt_cfg);
     esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler, NULL);
     esp_mqtt_client_start(client);
-    xTaskCreate(&mqtt_client_task, "mqtt_task", 4096, NULL, 9, NULL);
+    xTaskCreate(&mqtt_client_task, "mqtt_task", 2048, NULL, 9, NULL);
 }
 

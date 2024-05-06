@@ -4,5 +4,9 @@ freertos spiffs nvs_flash driver vfs json log cfg_hadilao webserver_hadilao)
 
 idf_component_register(SRCS ${app_src}                          
                        INCLUDE_DIRS "."
-                    REQUIRES ${pri_req})
+                    REQUIRES ${pri_req}
+                    EMBED_TXTFILES ${project_dir}/certs/client.crt
+                                 ${project_dir}/certs/client.key
+                                 ${project_dir}/certs/mosquitto.org.crt)
+
 target_compile_options(${COMPONENT_LIB} PRIVATE "-Wno-format")
