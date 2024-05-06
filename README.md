@@ -1,14 +1,5 @@
-
-MQTT    _server: test.mosquitto.org  
-        _topic MQTT address:  
-                '/mandevices/response': Response data from Node  
-                '/mandevices/receive': Receive .conf data from user  
-                '/mandevices/gateway': Upload data with TLS enabled  
-        _SSL: two-way authentic  
-CoAP    _server : theThings.io  
-        include:    _token_ID  
-                    _path  
-[![Kyuubi][stars-shield]][stars-url]
+ 
+[![stargazers][stars-shield]][stars-url]
 [![Forks][forks-shield]][forks-url]
 [![Issues][issues-shield]][issues-url]
 
@@ -37,9 +28,19 @@ CoAP    _server : theThings.io
 
 ## About the Project
 
-The project aims at 
+The project aims at design
 
-
+<pre>
+MQTT    _server: test.mosquitto.org  
+        _topic MQTT address:  
+                '/mandevices/response': Response data from Node  
+                '/mandevices/receive': Receive .conf data from user  
+                '/mandevices/gateway': Upload data with TLS enabled  
+        _SSL: two-way authentic  
+CoAP    _server : theThings.io  
+        include:    _token_ID  
+                    _path 
+</pre>
 <!-- MARKDOWN LINKS & IMAGES -->
 
 [forks-shield]:https://img.shields.io/github/forks/Kyuubi0323/IoT_20232
