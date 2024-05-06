@@ -17,11 +17,11 @@
     <br />
     [View Code](.)
     ·
-    [Report Bug](issues)
+    <a href="https://github.com/Kyuubi0323/IoT_20232/issues">Report Bug</a>
     ·
-    [Request Feature](feature)
+    <a href="https://github.com/Kyuubi0323/IoT_20232/issues">Request Feature</a>
     ·
-    [Create a Pull Request](pulls)
+    <a href="https://github.com/Kyuubi0323/IoT_20232/pulls">Create a Pull Request</a>
   </p>
 </p>
 
