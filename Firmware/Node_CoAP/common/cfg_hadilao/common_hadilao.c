@@ -31,8 +31,6 @@
 #include "driver/uart.h"
 #include "driver/spi_master.h"
 
-
-
 #include "common_hadilao.h"
 #include "cJSON.h"
 
@@ -63,4 +61,17 @@ esp_err_t mqtt_parse_data(char *mqtt_data, mqtt_obj_t *mqtt_obj)
     }
     cJSON_Delete(root);
     return ESP_OK;
+}
+
+void json_crt_obj(void)
+{ 
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddNumberToObject(root, "id", 1);
+    cJSON_AddStringToObject(root, "version", "1.0");
+    cJSON_AddNumberToObject(root, "temp", 30);
+    cJSON_AddNumberToObject(root, "humid", 50);
+    cJSON_AddNumberToObject(root, "light", 100);
+    char *json_str = cJSON_Print(root);
+    cJSON_Delete(root);
+    free(json_str);
 }

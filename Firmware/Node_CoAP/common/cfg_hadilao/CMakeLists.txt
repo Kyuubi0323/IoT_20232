@@ -5,4 +5,4 @@ freertos spiffs nvs_flash driver vfs json log)
 idf_component_register(SRCS ${app_src}                          
                        INCLUDE_DIRS "."
                     REQUIRES ${pri_req})
-#target_compile_options(${COMPONENT_LIB} PRIVATE "-Wno-format")
+target_compile_options(${COMPONENT_LIB} PRIVATE "-Wno-format")

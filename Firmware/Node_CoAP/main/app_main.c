@@ -59,7 +59,7 @@ static EventGroupHandle_t s_wifi_event_group;
 static ip_event_got_ip_t* event = NULL;
 static uint8_t u8RetryCounter = 0U;
 
-const static char *pcTAG = "TTIO_COAP_CLIENT";
+const static char *pcTAG = "COAP_CLIENT";
 
 static float fTemperature = 20.5;
 
@@ -481,13 +481,9 @@ void app_main(void)
 	  ESP_ERROR_CHECK(nvs_flash_erase());
 	  ret = nvs_flash_init();
 	}
-
 	ESP_ERROR_CHECK(ret);
-
     // Initialize station mode
 	wifi_init_sta();
-
-    
     xTaskCreate(CoAP_Task, "coap_task", 8192U, NULL, 5, NULL);
 
 }
