@@ -39,7 +39,8 @@ char pwd[50] = {0};
 
 status_blue_t status_blue;
 
- 
+ #define RELAY1 26
+ #define RELAY2 25
 
 void app_main()
 {   
@@ -54,6 +55,10 @@ void app_main()
     ESP_ERROR_CHECK(err);
     /* chip's information*/
     chip_stats();
+
+    output_io_create(RELAY1);
+    output_io_create(RELAY2);
+
     status_blue = NORMAL_MODE;
     /* init interface tasks */
     xTaskCreate(led_blue_task, "led_blue_task", 2048, NULL, 10, NULL);
