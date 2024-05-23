@@ -1,0 +1,14 @@
+dependencies:
+  idf:
+    version: '>=4.4'
+description: Constrained Application Protocol (CoAP) C Library
+repository: git://github.com/espressif/idf-extra-components.git
+repository_info:
+  commit_sha: 674eadc847bf8181032b7a333a8f9a001c6cea2f
+  path: coap
+sbom:
+  manifests:
+  - dest: libcoap
+    path: sbom_libcoap.yml
+url: https://github.com/espressif/idf-extra-components/tree/master/coap
+version: 4.3.4~2

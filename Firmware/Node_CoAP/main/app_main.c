@@ -26,17 +26,21 @@
 #include "nvs_flash.h"
 #include "esp_event.h"
 
-#include "coap3/coap.h"
+#include "wifi_sta_hadilao.h"
+#include "led_hadilao.h"
+#include "common_hadilao.h"
 
+#include "coap3/coap.h"
 #include "coap3/coap_internal.h"
 
 
-#define ESP_WIFI_SSID      		""		// Please insert your SSID
-#define ESP_WIFI_PASS      		""		// Please insert your password
+#define ESP_WIFI_SSID      		"Kyuubi"		// Please insert your SSID
+#define ESP_WIFI_PASS      		"laclac123"		// Please insert your password
 #define ESP_WIFI_AUTH_MODE		WIFI_AUTH_WPA2_PSK // See esp_wifi_types.h
 #define ESP_WIFI_MAX_RETRY 		5U
 
-#define THETHINGSIO_TOKEN_ID 	"5Bl--lhSEfIiWI-chEouKEAaOsIWLrD5An5KMegGo7I"		
+#define THETHINGSIO_TOKEN_ID 	"5Bl--lhSEfIiWI-chEouKEAaOsIWLrD5An5KMegGo7I"
+//#define THETHINGSIO_TOKEN_ID    "VGfuIegbEt6gwjO82oY2iitab_59g8wHgqP_OD8CcDU"
 #define THETHINGSIO_COAP_HOST	"coap://coap.thethings.io"
 #define THETHINGSIO_COAP_PATH 	"v2/things/" THETHINGSIO_TOKEN_ID
 
@@ -60,57 +64,13 @@ static uint8_t u8RetryCounter = 0U;
 
 const static char *pcTAG = "COAP_CLIENT";
 
-static float fTemperature = 20.5;
+static float fTemperature = 21;
 
 static bool resp_wait = true;
 static coap_optlist_t *optlist = NULL;
 static int wait_ms = 0U;
 
-static void WIFI_event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data)
-{
 
-	if (event_base == WIFI_EVENT)
-	{
-		switch (event_id)
-		{
-			case WIFI_EVENT_STA_START:
-				esp_wifi_connect();
-				break;
-			case WIFI_EVENT_STA_DISCONNECTED:
-				if (u8RetryCounter < ESP_WIFI_MAX_RETRY)
-				{
-					esp_wifi_connect();
-					u8RetryCounter++;
-					ESP_LOGI(pcTAG, "Retry to connect to the access point");
-				}
-				else
-				{
-					xEventGroupSetBits(s_wifi_event_group, WIFI_FAIL_BIT);
-					ESP_LOGI(pcTAG,"Connect to the access point fail");
-				}
-				break;
-			default:
-				// Do nothing (see WiFi event declarations in the esp_wifi_types.h)
-				break;
-		}
-	}
-	else if (event_base == IP_EVENT)
-	{
-		switch (event_id)
-		{
-			case IP_EVENT_STA_GOT_IP:
-				event = (ip_event_got_ip_t*) event_data;
-				u8RetryCounter = 0U;
-				xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
-				ESP_LOGI(pcTAG, "Got IP:" IPSTR, IP2STR(&event->ip_info.ip));
-				break;
-			default:
-				// Do nothing (see WiFi event declarations in the esp_netif_types.h)
-				break;
-		}
-	}
-
-}
 
 static void CoAP_event_handler(coap_context_t *psCtx, coap_session_t *psSession, coap_pdu_t *psPduSent, coap_pdu_t *psPduReceived,
                             const coap_mid_t id)
@@ -139,6 +99,7 @@ static void CoAP_event_handler(coap_context_t *psCtx, coap_session_t *psSession,
 
             if (coap_get_data(psPduReceived, &BufferLen, &pcBuffer))
             {
+                ESP_LOGI(pcTAG, "COAPPPPPP DATA NEEEEEE\n\r");
                 printf("%.*s", (int)BufferLen, pcBuffer);
             }
 
@@ -204,86 +165,11 @@ clean_up:
 
 }
 
-void wifi_init_sta(void)
-{
-
-	wifi_init_config_t sWifiInitCfg = WIFI_INIT_CONFIG_DEFAULT();
-	esp_event_handler_instance_t instance_any_id;
-	esp_event_handler_instance_t instance_got_ip;
-
-	EventBits_t WifiEventBits = 0U;
-
-    s_wifi_event_group = xEventGroupCreate();
-
-    ESP_ERROR_CHECK(esp_netif_init());
-
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
-    esp_netif_create_default_wifi_sta();
-
-    ESP_ERROR_CHECK(esp_wifi_init(&sWifiInitCfg));
-
-    ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT,
-                                                        ESP_EVENT_ANY_ID,
-                                                        &WIFI_event_handler,
-                                                        NULL,
-                                                        &instance_any_id));
-    ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT,
-                                                        IP_EVENT_STA_GOT_IP,
-                                                        &WIFI_event_handler,
-                                                        NULL,
-                                                        &instance_got_ip));
-
-    wifi_config_t sWifiConfig = {
-        .sta = {
-            .ssid = ESP_WIFI_SSID,
-            .password = ESP_WIFI_PASS,
-            /* Setting a password implies station will connect to all security modes including WEP/WPA.
-             * However these modes are deprecated and not advisable to be used. Incase your Access point
-             * doesn't support WPA2, these mode can be enabled by commenting below line */
-	     .threshold.authmode = ESP_WIFI_AUTH_MODE,
-
-            .pmf_cfg = {
-                .capable = true,
-                .required = false
-            },
-        },
-    };
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &sWifiConfig));
-    ESP_ERROR_CHECK(esp_wifi_start());
-
-    ESP_LOGI(pcTAG, "Wi-Fi initializated");
-
-    /* Waiting until either the connection is established (WIFI_CONNECTED_BIT) or connection failed for the maximum
-     * number of re-tries (WIFI_FAIL_BIT). The bits are set by wifi_event_handler() (see above) */
-    WifiEventBits = xEventGroupWaitBits(s_wifi_event_group, WIFI_CONNECTED_BIT | WIFI_FAIL_BIT, pdFALSE, pdFALSE, portMAX_DELAY);
-    ESP_LOGI(pcTAG, "Wi-Fi event bits: %d", WifiEventBits);
-    /* xEventGroupWaitBits() returns the bits before the call returned, hence we can test which event actually
-     * happened. */
-    if (WifiEventBits & WIFI_CONNECTED_BIT) {
-        ESP_LOGI(pcTAG, "Connected to access point SSID: %s, Password: %s",
-                 ESP_WIFI_SSID, ESP_WIFI_PASS);
-    } else if (WifiEventBits & WIFI_FAIL_BIT) {
-        ESP_LOGI(pcTAG, "Failed to connect to SSID: %s, Password: %s",
-                 ESP_WIFI_SSID, ESP_WIFI_PASS);
-    } else {
-        ESP_LOGE(pcTAG, "UNEXPECTED EVENT");
-    }
-
-    /* The event will not be processed after unregister */
-    ESP_ERROR_CHECK(esp_event_handler_instance_unregister(IP_EVENT, IP_EVENT_STA_GOT_IP, instance_got_ip));
-    ESP_ERROR_CHECK(esp_event_handler_instance_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, instance_any_id));
-
-    vEventGroupDelete(s_wifi_event_group);
-
-}
-
-
 static void CoAP_Task(void *p)
 {
 
 	const char acThingUri[] = THETHINGSIO_COAP_HOST "/v2/things/" THETHINGSIO_TOKEN_ID;
-	const uint8_t acThingData[] = "{\"values\":[{\"key\":\"Temperature\",\"value\":\"25.00\"}]}";
+	const uint8_t acThingData[50] = {0};
 
     struct hostent *psHostent;
     coap_address_t  dst_addr;
@@ -413,7 +299,7 @@ static void CoAP_Task(void *p)
         coap_add_optlist_pdu(psRequest, &optlist);
 
         sprintf((char *)acThingData, "{\"values\":[{\"key\":\"Temperature\",\"value\":\"%2.2f\"}]}", fTemperature);
-        ESP_LOGE(pcTAG, "Message sent: %s", acThingData);
+        ESP_LOGI(pcTAG, "Message sent: %s", acThingData);
         coap_add_data(psRequest, sizeof(acThingData) - 1, acThingData);
 
         coap_send(psSession, psRequest);
@@ -468,6 +354,9 @@ clean_up:
 
     vTaskDelete(NULL);
 }
+char ssid[50] = {0};
+char pwd[50] = {0};
+status_blue_t status_blue;
 
 void app_main(void)
 {
@@ -481,8 +370,22 @@ void app_main(void)
 	  ret = nvs_flash_init();
 	}
 	ESP_ERROR_CHECK(ret);
+    status_blue = NORMAL_MODE;  
+
+    chip_stats();
+    
+    wifi_init();
+    sprintf(ssid, "Kyuubi");
+    sprintf(pwd, "laclac123");
+    wifi_config_t wifi_config;
+    bzero(&wifi_config, sizeof(wifi_config_t));
+    memcpy(wifi_config.sta.ssid, ssid, strlen(ssid));
+    memcpy(wifi_config.sta.password, pwd, strlen(pwd));
+    
     // Initialize station mode
-	wifi_init_sta();
+    wifi_sta_start(wifi_config, WIFI_MODE_STA);
+	vTaskDelay(2000 / portTICK_PERIOD_MS);
+    xTaskCreate(led_blue_task, "led_blue_task", 2048, NULL, 10, NULL);
     xTaskCreate(CoAP_Task, "coap_task", 8192U, NULL, 5, NULL);
 
 }
