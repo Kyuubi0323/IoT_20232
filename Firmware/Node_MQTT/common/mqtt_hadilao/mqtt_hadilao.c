@@ -96,9 +96,9 @@ void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event
     case MQTT_EVENT_CONNECTED:
     {
         ESP_LOGI(TAG, "MQTT event connected");
-        //esp_mqtt_client_subscribe(client, topic_commands_data, 0);
+        esp_mqtt_client_subscribe(client, topic_commands_data, 0);
         esp_mqtt_client_subscribe(client, topic_commands_upgrade, 0);
-        cJSON_mqtt_handler(event);
+        //cJSON_mqtt_handler(event);
         cJSON_update_stt(event);
         break;
     }
@@ -213,14 +213,11 @@ void mqtt_client_start(void)
     ESP_LOGI(TAG, "done Ring_buffer");
     esp_mqtt_client_config_t mqtt_cfg = {
         .broker.address.uri = (char *)broker,
-        .broker.address.port = 1883,
-        // .credentials.username = MQTT_USERNAME,
-        // .credentials.client_id = MQTT_PASSWORD,
         .session.keepalive = 60,
     };
     client = esp_mqtt_client_init(&mqtt_cfg);
     esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler, NULL);
     esp_mqtt_client_start(client);
-    xTaskCreate(&mqtt_client_task, "mqtt_task", 4096, NULL, 9, NULL);
+    //xTaskCreate(&mqtt_client_task, "mqtt_task", 4096, NULL, 9, NULL);
 }
 

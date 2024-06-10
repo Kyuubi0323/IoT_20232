@@ -35,7 +35,7 @@
 #include "led_hadilao.h"
 
 
-#define LED 2
+#define LED 19
 #define RELAY1 18
 #define RELAY2 17
 static const char *TAG = "MAIN";
@@ -69,7 +69,7 @@ void app_main()
     output_io_create(RELAY2);
 
     /* init wifi configuration*/
-    wifi_init();
+    //wifi_init();
     sprintf(ssid, "Kyuubi");
     sprintf(pwd, "laclac123");
     wifi_config_t wifi_config;
@@ -78,18 +78,15 @@ void app_main()
     memcpy(wifi_config.sta.ssid, ssid, strlen(ssid));
     memcpy(wifi_config.sta.password, pwd, strlen(pwd));
     
-    wifi_sta_start(wifi_config, WIFI_MODE_STA);
-    mqtt_client_start();
-    // output_io_set_level(RELAY1, 1);
-    // output_io_set_level(RELAY2, 1);
-    // ESP_LOGI(TAG, "RELAY1 OFF");
-    // vTaskDelay(2000 / portTICK_PERIOD_MS);
-    // output_io_set_level(RELAY1, 0);
-    // output_io_set_level(RELAY2, 0);
-    // ESP_LOGI(TAG, "RELAY1 ON");
+    //wifi_sta_start(wifi_config, WIFI_MODE_STA);
+    //mqtt_client_start();
+    output_io_toggle(RELAY1);
+    vTaskDelay(2000 / portTICK_PERIOD_MS);
+    output_io_toggle(RELAY1);
+    vTaskDelay(2000 / portTICK_PERIOD_MS);
     while(1)
     {
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        vTaskDelay(500 / portTICK_PERIOD_MS);
         output_io_toggle(LED);
         
         ESP_LOGI(TAG, "LED TOGGLE");

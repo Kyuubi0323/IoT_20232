@@ -39,8 +39,8 @@ char pwd[50] = {0};
 
 status_blue_t status_blue;
 
- #define RELAY1 26
- #define RELAY2 25
+#define RELAY1 17
+#define RELAY2 18
 
 void app_main()
 {   
@@ -58,19 +58,21 @@ void app_main()
 
     output_io_create(RELAY1);
     output_io_create(RELAY2);
-
-    status_blue = NORMAL_MODE;
+    output_io_set_level(RELAY1, 0);
+    output_io_set_level(RELAY2, 0);
+    
     /* init interface tasks */
     xTaskCreate(led_blue_task, "led_blue_task", 2048, NULL, 10, NULL);
     /* init wifi configuration*/
     wifi_init();
     sprintf(ssid, "Kyuubi");
-    sprintf(pwd, "laclac123");
+    sprintf(pwd, "laclac1234");
     wifi_config_t wifi_config;
     bzero(&wifi_config, sizeof(wifi_config_t));
     memcpy(wifi_config.sta.ssid, ssid, strlen(ssid));
     memcpy(wifi_config.sta.password, pwd, strlen(pwd));
     wifi_sta_start(wifi_config, WIFI_MODE_STA);
+    
     vTaskDelay(1000 / portTICK_PERIOD_MS);
     mqtt_client_start();
 }

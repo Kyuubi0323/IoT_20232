@@ -84,8 +84,6 @@ void led_blue_task(void *param)
         case FOTA:
             gpio_set_level(LED_STATUS_BLUE, LED_ON);
             vTaskDelay(100 / portTICK_PERIOD_MS);
-            gpio_set_level(LED_STATUS_BLUE, LED_OFF);
-            vTaskDelay(100 / portTICK_PERIOD_MS);
             break;
         case WIFI_SOFTAP:
             gpio_set_level(LED_STATUS_BLUE, LED_ON);

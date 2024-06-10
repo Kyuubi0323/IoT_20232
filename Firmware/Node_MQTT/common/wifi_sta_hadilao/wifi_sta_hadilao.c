@@ -24,10 +24,14 @@
 #include "driver/spi_master.h"
 
 #include "wifi_sta_hadilao.h"
-
+#include "led_hadilao.h"
+#include "button_hadilao.h"
+#include "common_hadilao.h"
 
 static const char *TAG = "WIFI_STA";
 static EventGroupHandle_t wifi_event_group;
+
+extern status_blue_t status_blue;
 
 static void wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
@@ -35,14 +39,17 @@ static void wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t e
     {
         ESP_LOGI(TAG, "WiFi start connect to AP");
         esp_wifi_connect();
+        
     }
     else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED)
     {
+        status_blue = NOT_STATE;
         ESP_LOGI(TAG, "WiFi disconnected");
         esp_wifi_connect();
     }
     else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_CONNECTED)
     {
+        status_blue = NORMAL_MODE;
         ESP_LOGI(TAG, "WiFi connected");
     }
     else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
